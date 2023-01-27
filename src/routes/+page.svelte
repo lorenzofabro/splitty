@@ -1,47 +1,56 @@
-<script>
-	import { editionMode } from '../store';
+<script lang="ts">
+	let name: string = '';
+	let amount: number = 0;
+
+	let persons: any[] = [];
+	const addPerson = () => {
+		persons = [...persons, { name: name, amount: amount }];
+
+		name = '';
+		amount = 0;
+	};
+
+	const remove = (person: any) => {
+		persons = persons.filter((i) => i !== person);
+	};
 </script>
 
 <svelte:head>
-	<title>Home</title>
+	<title>splitty</title>
 </svelte:head>
 
 <section class="mt-5">
-	<!-- edition bar -->
-	{#if $editionMode}
-		<div class="card w-full bg-base-300 shadow-xl">
-			<div class="card-body flex flex-row p-2">
-				{#each ['card', 'text', 'bubble', 'countdown', 'stats', 'picture', 'alert', 'code'] as value}
-					<div class="btn btn-ghost normal-case text-lg">
-						{value}
-					</div>
-				{/each}
-			</div>
+	<div class="flex">
+		<div class="flex-auto w-64">
+			<form on:submit|preventDefault={addPerson}>
+				<input
+					type="text"
+					placeholder="name"
+					class="input input-bordered w-full max-w-xs"
+					bind:value={name}
+					required
+				/>
+				<input
+					type="number"
+					placeholder="amount"
+					class="input input-bordered w-full max-w-xs"
+					bind:value={amount}
+					required
+				/>
+				<button class="btn">add</button>
+			</form>
 		</div>
-	{/if}
-
-	<!-- blank spaces -->
-	<div class="grid grid-rows-4 grid-flow-col gap-4 my-10">
-		{#each Array(16) as _, i}
-			{#if [0, 1, 2, 3, 5, 7, 10].includes(i)}
-				<div class="indicator w-full">
-					{#if $editionMode}
-						<span class="indicator-item badge badge-sm h-5 w-5 hover:cursor-pointer">X</span>
-					{/if}
-					<div class="card w-full h-40 bg-base-300 shadow-xl">
-						<div class="card-body flex flex-row">{i + 1}</div>
-					</div>
-				</div>
-				<!-- <div class="card w-full h-40 bg-base-300 shadow-xl">
-					<div class="card-body flex flex-row">{i + 1}</div>
-				</div> -->
-			{:else if $editionMode}
-				<div class="card w-full h-40 bg-base-100 border-2 border-dashed">
-					<div class="card-body flex flex-row">{i + 1}</div>
-				</div>
-			{:else}
-				<div />
-			{/if}
-		{/each}
+		<div class="flex-auto w-32 justify-end">
+			<button class="btn">calculate</button>
+		</div>
 	</div>
+	<ul>
+		{#each persons as person}
+			<li>
+				<span>{person.name}</span>
+				<span>{person.amount}</span>
+				<button on:click={() => remove(person)}>&times;</button>
+			</li>
+		{/each}
+	</ul>
 </section>
