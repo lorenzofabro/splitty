@@ -1,6 +1,5 @@
 <script lang="ts">
 	import type { Debt, Person } from './interfaces';
-	import PersonCard from './Person.svelte';
 
 	let name: string = '';
 	let amount: number = 0;
@@ -22,6 +21,8 @@
 
 		name = '';
 		amount = 0;
+
+		document.getElementById('name-input')?.focus();
 	};
 
 	const remove = (person: any) => {
@@ -81,67 +82,122 @@
 </svelte:head>
 
 <section class="mt-5">
+	<!-- modal -->
 	<input type="checkbox" id="my-modal" class="modal-toggle" />
 	<div class="modal">
 		<div class="modal-box">
-			<h3 class="font-bold text-lg">these are the results 🥁</h3>
-			<ul>
-				{#each debts as debt}
-					<li>
-						{people.find((p) => p.id === debt.from)?.name} owes {Math.round(
-							(debt.amount + Number.EPSILON) * 100
-						) / 100} to {people.find((p) => p.id === debt.to)?.name}
-					</li>
-				{/each}
-			</ul>
+			{#if debts.length > 0}
+				<h3 class="font-bold text-lg">these are the results 🥁</h3>
+				<ul>
+					{#each debts as debt}
+						<li>
+							{people.find((p) => p.id === debt.from)?.name} owes {Math.round(
+								(debt.amount + Number.EPSILON) * 100
+							) / 100} to {people.find((p) => p.id === debt.to)?.name}
+						</li>
+					{/each}
+				</ul>
+			{:else}
+				<h3 class="font-bold text-lg">no debts to calculate 🎉</h3>
+			{/if}
 			<div class="modal-action">
 				<btn class="btn" on:click={() => closeModal()}>Yay!</btn>
 			</div>
 		</div>
 	</div>
 
-	<div class="flex flex-col md:flex-row mb-5">
-		<div class="flex-auto md:w-64">
+	<!-- actions -->
+	<div class="mt-10 sm:mt-0">
+		<div class="mt-5 md:col-span-2 md:mt-0">
 			<form on:submit|preventDefault={addPerson}>
-				<input
-					type="text"
-					placeholder="name"
-					class="input input-bordered max-w-lg"
-					bind:value={name}
-					required
-				/>
-				<input
-					type="number"
-					placeholder="amount"
-					class="input input-bordered mt-2 max-w-lg"
-					bind:value={amount}
-					required
-				/>
-				<button class="btn w-full mt-2 max-w-lg">add</button>
+				<div class="overflow-hidden sm:rounded-md">
+					<div>
+						<div class="grid gap-3 md:grid-cols-12 sm:grid-cols-1">
+							<div class="md:col-span-3 sm:col-span-1">
+								<input
+									type="text"
+									placeholder="name"
+									class="input input-bordered block w-full"
+									bind:value={name}
+									id="name-input"
+									required
+								/>
+							</div>
+
+							<div class="md:col-span-3 sm:col-span-1">
+								<input
+									type="number"
+									placeholder="amount"
+									class="input input-bordered block w-full"
+									bind:value={amount}
+									required
+								/>
+							</div>
+
+							<div class="md:col-span-2 sm:col-span-1">
+								<button class="btn w-full" type="submit">add</button>
+							</div>
+							<div class="md:col-span-2 sm:col-span-1">
+								<button
+									class="btn w-full"
+									on:click={() => calculateDebts()}
+									disabled={people.length <= 0}>calculate</button
+								>
+							</div>
+							<div class="md:col-span-2 sm:col-span-1">
+								<button
+									class="btn w-full"
+									on:click={() => {
+										people = [];
+									}}
+									disabled={people.length <= 0}>clean</button
+								>
+							</div>
+						</div>
+					</div>
+				</div>
 			</form>
 		</div>
 	</div>
 
-	<div class="flex-auto mt-2">
-		<button
-			class="btn w-full md:w-auto"
-			on:click={() => calculateDebts()}
-			disabled={people.length <= 0}>calculate</button
-		>
-	</div>
-
-	<div class="flex-auto mt-2">
-		<button
-			class="btn w-full md:w-auto"
-			on:click={() => {
-				people = [];
-			}}
-			disabled={people.length <= 0}>clean</button
-		>
-	</div>
-	<div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-2">
-		{#each people as person}
-			<PersonCard {person} {remove} />
-		{/each}
-	</div>
+	<!-- data -->
+	{#if people.length > 0}
+		<div class="flex mt-4 overflow-x-auto">
+			<table class="table w-full">
+				<!-- head -->
+				<thead>
+					<tr>
+						<th>name</th>
+						<th>amount</th>
+						<th />
+					</tr>
+				</thead>
+				<tbody>
+					{#each people as person}
+						<tr class="hover">
+							<td>{person.name}</td>
+							<td>{person.amount}</td>
+							<td
+								><button class="btn btn-square btn-sm" on:click={() => remove(person)}>
+									<svg
+										xmlns="http://www.w3.org/2000/svg"
+										class="h-6 w-6"
+										fill="none"
+										viewBox="0 0 24 24"
+										stroke="currentColor"
+										><path
+											stroke-linecap="round"
+											stroke-linejoin="round"
+											stroke-width="2"
+											d="M6 18L18 6M6 6l12 12"
+										/></svg
+									></button
+								></td
+							>
+						</tr>
+					{/each}
+				</tbody>
+			</table>
+		</div>
+	{/if}
 </section>
