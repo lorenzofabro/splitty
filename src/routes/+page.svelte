@@ -101,7 +101,7 @@
 				<h3 class="font-bold text-lg">no debts to calculate 🎉</h3>
 			{/if}
 			<div class="modal-action">
-				<btn class="btn" on:click={() => closeModal()}>Yay!</btn>
+				<button class="btn" on:click={() => closeModal()}>Yay!</button>
 			</div>
 		</div>
 	</div>
