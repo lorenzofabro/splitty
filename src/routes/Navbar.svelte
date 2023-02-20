@@ -1,7 +1,7 @@
 <navbar>
 	<div class="navbar bg-base-100 p-6 md:p-8">
 		<div class="navbar-start">
-			<a class="btn btn-ghost normal-case text-xl">splitty 💰</a>
+			<button class="btn btn-ghost normal-case text-xl">splitty 💰</button>
 		</div>
 		<div class="navbar-center">
 			<div />
