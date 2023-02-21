@@ -1,17 +1,19 @@
 <script lang="ts">
 	import { copied } from '../store';
+	import { onMount } from 'svelte';
 
 	export let text: string;
-	export let url = 'https://splitty-ten.vercel.app/';
-	export let title = 'splitty';
 
 	let canShare: boolean;
 
-	async function handleClick() {
+	onMount(async () => {
 		canShare = navigator.canShare;
+	});
+
+	async function handleClick() {
 		try {
 			if (canShare) {
-				await navigator.share({ text, url, title });
+				await navigator.share({ text });
 			} else {
 				await navigator.clipboard.writeText(text);
 				copied.set(true);
