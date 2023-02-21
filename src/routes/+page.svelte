@@ -1,11 +1,14 @@
 <script lang="ts">
+	import { copied } from '../store';
 	import type { Debt, Person } from './interfaces';
+	import ShareButton from './ShareButton.svelte';
 
 	let name: string = '';
 	let amount: number = 0;
 
 	let people: Person[] = [];
 	let debts: Debt[] = [];
+	let debtsToShare: string = '';
 
 	const addPerson = () => {
 		const lastId = people.reduce((maxId, person) => Math.max(maxId, person.id), 0);
@@ -30,6 +33,8 @@
 	};
 
 	function calculateDebts() {
+		copied.set(false);
+
 		const totalAmount = people.reduce((acc, person) => acc + person.amount, 0);
 		const averageAmount = totalAmount / people.length;
 
@@ -66,6 +71,14 @@
 			balances[Number(negativeId)] = negativeBalanceAmount + transferAmount;
 		}
 
+		debtsToShare = debts
+			.map((debt) => {
+				return `${people.find((p) => p.id === debt.from)?.name} owes ${
+					Math.round((debt.amount + Number.EPSILON) * 100) / 100
+				} to ${people.find((p) => p.id === debt.to)?.name}`;
+			})
+			.join('\r\n');
+
 		document.getElementById('my-modal').checked = true;
 	}
 
@@ -89,11 +102,9 @@
 			{#if debts.length > 0}
 				<h3 class="font-bold text-lg">these are the results 🥁</h3>
 				<ul>
-					{#each debts as debt}
+					{#each debtsToShare.split('\r\n') as debt}
 						<li>
-							{people.find((p) => p.id === debt.from)?.name} owes {Math.round(
-								(debt.amount + Number.EPSILON) * 100
-							) / 100} to {people.find((p) => p.id === debt.to)?.name}
+							{debt}
 						</li>
 					{/each}
 				</ul>
@@ -101,7 +112,10 @@
 				<h3 class="font-bold text-lg">no debts to calculate 🎉</h3>
 			{/if}
 			<div class="modal-action">
-				<button class="btn" on:click={() => closeModal()}>Yay!</button>
+				{#if debts.length > 0}
+					<ShareButton text={debtsToShare} />
+				{/if}
+				<button class="btn" on:click={() => closeModal()}>close</button>
 			</div>
 		</div>
 	</div>
@@ -141,7 +155,7 @@
 								<button
 									class="btn w-full"
 									on:click={() => calculateDebts()}
-									disabled={people.length <= 0}>calculate</button
+									disabled={people.length <= 1}>calculate</button
 								>
 							</div>
 							<div class="md:col-span-2 sm:col-span-1">
