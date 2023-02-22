@@ -1,5 +1,5 @@
 <navbar>
-	<div class="navbar bg-base-100 p-6 md:p-8">
+	<div class="navbar bg-base-100 px-6 py-3">
 		<div class="navbar-start">
 			<button class="btn btn-ghost normal-case text-xl">splitty 💰</button>
 		</div>

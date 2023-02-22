@@ -86,7 +86,7 @@
 		document.getElementById('my-modal').checked = false;
 		setTimeout(() => {
 			debts = [];
-		}, 1000);
+		}, 250);
 	}
 </script>
 
@@ -94,7 +94,7 @@
 	<title>splitty</title>
 </svelte:head>
 
-<section class="mt-5">
+<section>
 	<!-- modal -->
 	<input type="checkbox" id="my-modal" class="modal-toggle" />
 	<div class="modal">
@@ -121,8 +121,8 @@
 	</div>
 
 	<!-- actions -->
-	<div class="mt-10 sm:mt-0">
-		<div class="mt-5 md:col-span-2 md:mt-0">
+	<div>
+		<div class="mt-1 md:col-span-2 md:mt-0">
 			<form on:submit|preventDefault={addPerson}>
 				<div class="overflow-hidden sm:rounded-md">
 					<div>
@@ -154,6 +154,7 @@
 							<div class="md:col-span-2 sm:col-span-1">
 								<button
 									class="btn w-full"
+									type="button"
 									on:click={() => calculateDebts()}
 									disabled={people.length <= 1}>calculate</button
 								>
@@ -161,6 +162,7 @@
 							<div class="md:col-span-2 sm:col-span-1">
 								<button
 									class="btn w-full"
+									type="button"
 									on:click={() => {
 										people = [];
 									}}
