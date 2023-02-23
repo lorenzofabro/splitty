@@ -1,8 +1,0 @@
-{
-	"name": "splitty",
-	"short_name": "splitty",
-	"start_url": "/",
-	"scope": "/",
-	"icons": [{ "src": "/favicon.png", "sizes": "64x64", "type": "image/png" }],
-	"display": "standalone"
-}
