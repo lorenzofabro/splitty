@@ -2,6 +2,9 @@
 	import { copied } from '../store';
 	import type { Debt, Person } from './interfaces';
 	import ShareButton from './ShareButton.svelte';
+	import addUserIcon from '../lib/images/add-user.png';
+	import calculateIcon from '../lib/images/calculate.png';
+	import cleanIcon from '../lib/images/clean.png';
 
 	let name: string = '';
 	let amount: number = 0;
@@ -9,6 +12,8 @@
 	let people: Person[] = [];
 	let debts: Debt[] = [];
 	let debtsToShare: string = '';
+
+	$: innerWidth = 0;
 
 	const addPerson = () => {
 		const lastId = people.reduce((maxId, person) => Math.max(maxId, person.id), 0);
@@ -94,6 +99,8 @@
 	<title>splitty</title>
 </svelte:head>
 
+<svelte:window bind:innerWidth />
+
 <section>
 	<!-- modal -->
 	<input type="checkbox" id="my-modal" class="modal-toggle" />
@@ -126,8 +133,8 @@
 			<form on:submit|preventDefault={addPerson}>
 				<div class="overflow-hidden sm:rounded-md">
 					<div>
-						<div class="grid gap-3 md:grid-cols-12 sm:grid-cols-1">
-							<div class="md:col-span-3 sm:col-span-1">
+						<div class="grid gap-3 md:grid-cols-12 grid-cols-3">
+							<div class="col-span-3">
 								<input
 									type="text"
 									placeholder="name"
@@ -138,7 +145,7 @@
 								/>
 							</div>
 
-							<div class="md:col-span-3 sm:col-span-1">
+							<div class="col-span-3">
 								<input
 									type="number"
 									placeholder="amount"
@@ -148,26 +155,40 @@
 								/>
 							</div>
 
-							<div class="md:col-span-2 sm:col-span-1">
-								<button class="btn w-full" type="submit">add</button>
+							<div class="md:col-span-2 col-span-1">
+								<button class="btn w-full" type="submit">
+									{#if innerWidth >= 880}
+										<span class="mr-2">add</span>
+									{/if}
+									<img src={addUserIcon} alt="add" class="h-10" />
+								</button>
 							</div>
-							<div class="md:col-span-2 sm:col-span-1">
+							<div class="md:col-span-2 col-span-1">
 								<button
 									class="btn w-full"
 									type="button"
 									on:click={() => calculateDebts()}
-									disabled={people.length <= 1}>calculate</button
+									disabled={people.length <= 1}
 								>
+									{#if innerWidth >= 880}
+										<span class="mr-2">calc</span>
+									{/if}
+									<img src={calculateIcon} alt="calculate" class="h-10" />
+								</button>
 							</div>
-							<div class="md:col-span-2 sm:col-span-1">
+							<div class="md:col-span-2 col-span-1">
 								<button
 									class="btn w-full"
 									type="button"
 									on:click={() => {
 										people = [];
 									}}
-									disabled={people.length <= 0}>clean</button
-								>
+									disabled={people.length <= 0}
+									>{#if innerWidth >= 880}
+										<span class="mr-2">clean</span>
+									{/if}
+									<img src={cleanIcon} alt="clean" class="h-10" />
+								</button>
 							</div>
 						</div>
 					</div>
