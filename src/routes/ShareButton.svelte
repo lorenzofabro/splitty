@@ -11,6 +11,7 @@
 	});
 
 	async function handleClick() {
+		text += '\nsplitty.loren.land';
 		try {
 			if (canShare) {
 				await navigator.share({ text });
